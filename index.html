@@ -1,0 +1,111 @@
+a Interactivo de La vida mentirosa de los adultos
+Preview
+Code
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapa Literario de Nápoles</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <style>
+        body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        #map { height: 600px; width: 100%; }
+        .header { margin-bottom: 20px; }
+        .legend { 
+            background: white; 
+            padding: 10px; 
+            border-radius: 5px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .legend h4 { margin: 0 0 10px 0; }
+        .legend-item { 
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .marker-description {
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Mapa Literario: La vida mentirosa de los adultos</h1>
+        <p>Explora los lugares mencionados en la novela de Elena Ferrante</p>
+    </div>
+    <div id="map"></div>
+
+    <script>
+        // Inicializar el mapa centrado en Nápoles
+        const map = L.map('map').setView([40.8518, 14.2681], 13);
+
+        // Agregar la capa de mapa base de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Datos de los lugares mencionados en el libro
+        const places = [
+            {
+                name: "Vomero",
+                coords: [40.8470, 14.2397],
+                description: "Barrio residencial elegante donde vive Giovanna con su familia. Representa la clase alta napolitana.",
+                type: "neighborhood"
+            },
+            {
+                name: "Rione Industriale",
+                coords: [40.8528, 14.2850],
+                description: "Zona industrial donde vive la tía Vittoria. Simboliza el contraste social con Vomero.",
+                type: "neighborhood"
+            },
+            {
+                name: "Via Toledo",
+                coords: [40.8468, 14.2490],
+                description: "Importante calle comercial que conecta diferentes partes de la ciudad.",
+                type: "street"
+            },
+            {
+                name: "Funicular Central",
+                coords: [40.8437, 14.2477],
+                description: "Conexión histórica entre el centro de la ciudad y el barrio Vomero.",
+                type: "landmark"
+            }
+        ];
+
+        // Función para crear marcadores con popups
+        function addMarker(place) {
+            const marker = L.marker(place.coords)
+                .bindPopup(`
+                    <div class="marker-description">
+                        <h3>${place.name}</h3>
+                        <p>${place.description}</p>
+                    </div>
+                `)
+                .addTo(map);
+        }
+
+        // Agregar todos los marcadores al mapa
+        places.forEach(addMarker);
+
+        // Agregar leyenda
+        const legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = `
+                <h4>Lugares en la novela</h4>
+                ${places.map(place => `
+                    <div class="legend-item">
+                        <strong>${place.name}</strong><br>
+                        ${place.description}
+                    </div>
+                `).join('')}
+            `;
+            return div;
+        };
+        legend.addTo(map);
+    </script>
+</body>
+</html>
